@@ -1,0 +1,14 @@
+@import "./components/RankItem/rank-item";
+@import "./components/RankList/rank-list";
+
+.rank {
+  width: 1200px;
+  padding: 12px 24px;
+  margin: 0 auto;
+  border: 1px solid #000;
+  border-radius: 12px;
+  box-shadow: 2px 2px 2px rgba($color: #000000, $alpha: 0.6);
+  &-title {
+    text-align: center;
+  }
+}

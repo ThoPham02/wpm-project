@@ -2,11 +2,14 @@ import React from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 
-function DefaultLayout({ chilren }) {
+function DefaultLayout({ children }) {
   return (
     <div>
       <Header />
-      <div className="content">{chilren}</div>
+      <div className="padding"></div>
+      <div className="content">
+        {children}
+      </div>
       <Footer />
     </div>
   );

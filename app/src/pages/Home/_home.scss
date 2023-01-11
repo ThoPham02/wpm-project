@@ -1,0 +1,21 @@
+@import "./Components/PostItem/post-item";
+@import "./Components/PostList/post-list";
+
+.home {
+  width: 1200px;
+  padding: 12px 24px;
+  margin: 0 auto;
+  border: 1px solid #000;
+  border-radius: 12px;
+  box-shadow: 2px 2px 2px rgba($color: #000000, $alpha: 0.6);
+  &-title {
+    text-align: center;
+  }
+  &-search {
+    margin: 8px auto;
+    input {
+      width: 600px;
+      padding: 4px 12px;
+    }
+  }
+}

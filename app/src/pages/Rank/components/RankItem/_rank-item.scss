@@ -1,0 +1,13 @@
+.rankItem {
+    &:hover {
+      background-color: #999;
+    }
+    &-rank {
+      width: 10%;
+      text-align: center;
+    }
+    &-age{
+      text-align: center;
+    }
+  }
+  

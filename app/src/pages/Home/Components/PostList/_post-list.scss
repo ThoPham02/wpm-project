@@ -1,0 +1,18 @@
+.postList {
+    width: 100%;
+    &-id {
+        width: 10%;
+        text-align: center;
+    }
+    &-name{
+        width: 60%;
+    }
+    &-length {
+        text-align: center;
+        width: 15%;
+    }
+    &-age {
+        text-align: center;
+        width: 15%;
+    }
+}

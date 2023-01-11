@@ -1,0 +1,9 @@
+@import './Footer/footer';
+@import './Header/header';
+
+.padding {
+    height: 132px;
+}
+.content {
+    min-height: calc(100vh - 252px);
+}

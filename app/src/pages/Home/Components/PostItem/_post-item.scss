@@ -1,0 +1,21 @@
+.postItem {
+  width: 100%;
+  &:hover {
+    background-color: #999;
+  }
+  &-id {
+    width: 10%;
+    text-align: center;
+  }
+  &-name {
+    width: 60%;
+  }
+  &-length {
+    width: 15%;
+    text-align: center;
+  }
+  &-age {
+    width: 15%;
+    text-align: center;
+  }
+}
