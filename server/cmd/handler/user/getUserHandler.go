@@ -1,9 +1,9 @@
-package handler
+package user
 
 import (
 	"context"
 	"net/http"
-	"wpm-project/cmd/logic"
+	"wpm-project/cmd/logic/user"
 	"wpm-project/cmd/svc"
 	"wpm-project/core/http_response"
 	"wpm-project/core/logger"
@@ -18,7 +18,7 @@ func GetUserHandler(svcCtx *svc.ServiceContext) gin.HandlerFunc {
 		// Init log helper with context (have trace_id)
 		logHelper := logger.NewContextLog(ctx)
 		// New object logic (all logic code will implement in this object)
-		getUserLogic := logic.NewGetUserLogic(ctx, svcCtx, logHelper)
+		getUserLogic := user.NewGetUserLogic(ctx, svcCtx, logHelper)
 
 		// Call functions in logic to process
 		response, err := getUserLogic.GetUser()

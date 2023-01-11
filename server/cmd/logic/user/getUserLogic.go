@@ -1,4 +1,4 @@
-package logic
+package user
 
 import (
 	"context"
@@ -24,7 +24,7 @@ func NewGetUserLogic(ctx context.Context, svcCtx *svc.ServiceContext, logHelper 
 }
 
 func (l *GetUserLogic) GetUser() (*types.GetUserResponse, error) {
-	l.logHelper.Infof("Start process get topic")
+	l.logHelper.Infof("Start process get user")
 	topics, err := l.svcCtx.UserRepo.GetUser(l.ctx, nil)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -39,7 +39,6 @@ func (l *GetUserLogic) GetUser() (*types.GetUserResponse, error) {
 		dataResponse = append(dataResponse, types.User{
 			ID: value.ID,
 			Name: value.Name,
-			Password: value.Password,
 			Mail: value.Mail,
 		})
 	}

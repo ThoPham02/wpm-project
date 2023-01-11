@@ -14,48 +14,48 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type UserDB struct {
+type PointDB struct {
 	table string
 	connect *sqlx.DB
 	ignoreInsertColumns []string
 	datatimeColumns []string
 }
 
-func NewUserDB(c config.Config) (repo.UserRepo, error){ 
+func NewPointDB(c config.Config) (repo.PointRepo, error){ 
 	db, err := sqlx.Open(c.Database.Driver, c.Database.Source)
 	if err != nil {
 		panic(err)
 	}
-	return &UserDB{
-		table: "users",
+	return &PointDB{
+		table: "points",
 		connect: db,
 		ignoreInsertColumns: []string{"id"},
 		datatimeColumns: []string{"created_at", "updated_at", "deleted_at"},
 	}, nil
 }
 
-func (user *UserDB) Close() {
-	err := user.connect.Close()
+func (point *PointDB) Close() {
+	err := point.connect.Close()
 	if err != nil {
 		return
 	}
 }
 
-func (u *UserDB) GetUser(ctx context.Context, condition *repo.UserConditions) ([]*model.User, error) {
+func (u *PointDB) GetPoint(ctx context.Context, condition *repo.PointConditions) ([]*model.Point, error) {
 	ctxLogger := logger.NewContextLog(ctx)
 	db := sq.Select("*").From(u.table)
 	if condition != nil {
-		
+
 	}
 	query, arg, err := db.ToSql()
 	if err != nil {
 		ctxLogger.Errorf("Failed while build query, error: %s", err.Error())
 		return nil, err
 	}
-	var result []*model.User
+	var result []*model.Point
 	err = u.connect.Select(&result, query, arg...)
 	if err != nil {
-		ctxLogger.Errorf("Failed while select user, error: %s", err.Error())
+		ctxLogger.Errorf("Failed while select point, error: %s", err.Error())
 		return nil, err
 	}
 	if result == nil {
@@ -64,11 +64,11 @@ func (u *UserDB) GetUser(ctx context.Context, condition *repo.UserConditions) ([
 	return result, nil
 }
 
-func (u *UserDB) CreateUser(ctx context.Context, user *model.User) error {
+func (u *PointDB) CreatePoint(ctx context.Context, point *model.Point) error {
 	ctxLogger := logger.NewContextLog(ctx)
 	db := sq.Insert(u.table).
-	Columns(GetListColumn(user, u.ignoreInsertColumns, u.datatimeColumns)...).
-	Values(GetListValues(user, u.ignoreInsertColumns, u.datatimeColumns)...).
+	Columns(GetListColumn(point, u.ignoreInsertColumns, u.datatimeColumns)...).
+	Values(GetListValues(point, u.ignoreInsertColumns, u.datatimeColumns)...).
 	Columns("created_at").Values(time.Now())
 
 	query, arg, err := db.ToSql()
@@ -81,9 +81,5 @@ func (u *UserDB) CreateUser(ctx context.Context, user *model.User) error {
 		ctxLogger.Errorf("Failed while create user, error: %s", err.Error())
 		return err
 	}
-	return nil
-}
-
-func (u *UserDB) UpdateUser(ctx context.Context,user *model.User) error {
 	return nil
 }
