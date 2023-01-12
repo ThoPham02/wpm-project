@@ -1,5 +1,5 @@
 import Home from "../pages/Home"
-import Login from "../pages/Home"
+import Login from "../pages/Login"
 import Rank from "../pages/Rank"
 import Typing from "../pages/Typing"
 import User from "../pages/User"

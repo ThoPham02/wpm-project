@@ -2,11 +2,15 @@
     position: fixed;
     z-index: 100;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
     height: 120px;
     width: 100%;
-    padding: 8px 20%;
+    padding: 8px 0;
 
-    background: linear-gradient(rgb(45, 175, 245), rgb(51, 92, 255));
+    background: linear-gradient(rgb(224, 248, 72), rgb(179, 253, 181));
     &-logo {
         float: left;
         & img{
