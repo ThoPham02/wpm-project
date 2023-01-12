@@ -6,6 +6,7 @@ import (
 )
 
 type UserConditions struct {
+	ID int64
 }
 
 type UserRepo interface {

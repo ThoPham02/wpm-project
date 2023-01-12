@@ -9,7 +9,7 @@ type Post struct {
 	Descriptions string  `json:"descriptions"`
 	Content      string  `json:"content"`
 	UserID       int64   `json:"user_id"`
-	Created_at   *string `json:"created_at"`
+	CreatedAt   *string `json:"created_at"`
 }
 
 type GetPostResponse struct {

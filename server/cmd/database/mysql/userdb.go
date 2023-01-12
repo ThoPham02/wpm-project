@@ -45,7 +45,9 @@ func (u *UserDB) GetUser(ctx context.Context, condition *repo.UserConditions) ([
 	ctxLogger := logger.NewContextLog(ctx)
 	db := sq.Select("*").From(u.table)
 	if condition != nil {
-
+		if condition.ID != 0 {
+			db.Where(sq.Eq{"id": condition.ID})
+		}
 	}
 	query, arg, err := db.ToSql()
 	if err != nil {

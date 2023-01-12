@@ -6,6 +6,8 @@ import (
 )
 
 type PointConditions struct {
+	ID     int64
+	Search string
 }
 
 type PointRepo interface {

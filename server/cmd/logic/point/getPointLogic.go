@@ -38,7 +38,7 @@ func (l *GetPointLogic) GetPoint() (*types.GetPointResponse, error) {
 	var dataResponse []types.Point
 	for _, value := range points {
 		users, err := l.svcCtx.UserRepo.GetUser(l.ctx, &repo.UserConditions{
-			
+			ID: value.UserID,
 		})
 		if err != nil {
 			l.logHelper.Errorf("Failed while get user name, error: %s", err.Error())

@@ -3,6 +3,7 @@ package mysql
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 	"wpm-project/cmd/config"
 	"wpm-project/cmd/database/model"
@@ -45,7 +46,12 @@ func (u *PointDB) GetPoint(ctx context.Context, condition *repo.PointConditions)
 	ctxLogger := logger.NewContextLog(ctx)
 	db := sq.Select("*").From(u.table)
 	if condition != nil {
-
+		if condition.ID != 0 {
+			db.Where(sq.Eq{"id": condition.ID})
+		}
+		if condition.Search != "" {
+			db.Where(sq.Like{"title": fmt.Sprintf("%%%s%%", condition.Search)})
+		}
 	}
 	query, arg, err := db.ToSql()
 	if err != nil {

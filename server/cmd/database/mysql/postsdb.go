@@ -15,22 +15,22 @@ import (
 )
 
 type PostDB struct {
-	table string
-	connect *sqlx.DB
+	table               string
+	connect             *sqlx.DB
 	ignoreInsertColumns []string
-	datatimeColumns []string
+	datatimeColumns     []string
 }
 
-func NewPostDB(c config.Config) (repo.PostRepo, error){ 
+func NewPostDB(c config.Config) (repo.PostRepo, error) {
 	db, err := sqlx.Open(c.Database.Driver, c.Database.Source)
 	if err != nil {
 		panic(err)
 	}
 	return &PostDB{
-		table: "posts",
-		connect: db,
+		table:               "posts",
+		connect:             db,
 		ignoreInsertColumns: []string{"id"},
-		datatimeColumns: []string{"created_at", "updated_at", "deleted_at"},
+		datatimeColumns:     []string{},
 	}, nil
 }
 
@@ -43,9 +43,13 @@ func (post *PostDB) Close() {
 
 func (u *PostDB) GetPost(ctx context.Context, condition *repo.PostConditions) ([]*model.Post, error) {
 	ctxLogger := logger.NewContextLog(ctx)
-	db := sq.Select("*").From(u.table)
+	db := sq.Select("*").
+		From(u.table).
+		Where(sq.NotEq{"deleted_at": nil})
 	if condition != nil {
-
+		if condition.ID != 0 {
+			db.Where(sq.Eq{"id": condition.ID})
+		}
 	}
 	query, arg, err := db.ToSql()
 	if err != nil {
@@ -66,16 +70,18 @@ func (u *PostDB) GetPost(ctx context.Context, condition *repo.PostConditions) ([
 
 func (u *PostDB) CreatePost(ctx context.Context, post *model.Post) error {
 	ctxLogger := logger.NewContextLog(ctx)
+	curTime := time.Now().Format(time.RFC3339)
+	post.Created_at = &curTime
 	db := sq.Insert(u.table).
-	Columns(GetListColumn(post, u.ignoreInsertColumns, u.datatimeColumns)...).
-	Values(GetListValues(post, u.ignoreInsertColumns, u.datatimeColumns)...).
-	Columns("created_at").Values(time.Now())
+		Columns(GetListColumn(post, u.ignoreInsertColumns, u.datatimeColumns)...).
+		Values(GetListValues(post, u.ignoreInsertColumns, u.datatimeColumns)...)
 
 	query, arg, err := db.ToSql()
 	if err != nil {
 		ctxLogger.Errorf("Failed while build query, error: %s", err.Error())
 		return err
 	}
+
 	_, err = u.connect.Exec(query, arg...)
 	if err != nil {
 		ctxLogger.Errorf("Failed while create post, error: %s", err.Error())
@@ -84,10 +90,55 @@ func (u *PostDB) CreatePost(ctx context.Context, post *model.Post) error {
 	return nil
 }
 
-func (u *PostDB) UpdatePost(ctx context.Context,post *model.Post) error {
+func (u *PostDB) UpdatePost(ctx context.Context, post *model.Post) error {
+	ctxLogger := logger.NewContextLog(ctx)
+
+	curTime := time.Now().Format(time.RFC3339)
+	db := sq.Update(u.table).
+		Set("title", post.Title).
+		Set("descriptions", post.Descriptions).
+		Set("content", post.Content).
+		Set("updated_at", &curTime).
+		Where(sq.Eq{"id": post.ID})
+
+	query, arg, err := db.ToSql()
+	if err != nil {
+		ctxLogger.Errorf("Failed while build query, error: %s", err.Error())
+		return err
+	}
+	ctxLogger.Debug(query)
+
+	_, err = u.connect.Exec(query, arg...)
+	if err != nil {
+		ctxLogger.Errorf("Failed while update user, error: %s", err.Error())
+		return err
+	}
 	return nil
 }
 
 func (u *PostDB) DeletePost(ctx context.Context, condition *repo.PostConditions) error {
+	ctxLogger := logger.NewContextLog(ctx)
+
+	curTime := time.Now().Format(time.RFC3339)
+	db := sq.Update(u.table).
+		Set("deleted_at", &curTime)
+	if condition != nil {
+		if condition.ID != 0 {
+			db.Where(sq.Eq{"id": condition.ID})
+		}
+	}
+
+	query, arg, err := db.ToSql()
+	if err != nil {
+		ctxLogger.Errorf("Failed while build query, error: %s", err.Error())
+		return err
+	}
+	ctxLogger.Debug(query)
+
+	_, err = u.connect.Exec(query, arg...)
+	if err != nil {
+		ctxLogger.Errorf("Failed while update user, error: %s", err.Error())
+		return err
+	}
 	return nil
 }

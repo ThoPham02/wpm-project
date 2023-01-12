@@ -6,7 +6,7 @@ import (
 )
 
 type PostConditions struct {
-
+	ID int64
 }
 
 type PostRepo interface {
