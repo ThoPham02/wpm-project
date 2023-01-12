@@ -23,7 +23,7 @@ func NewCreateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext, logHelp
 	}
 }
 
-func (l *GetUserLogic) CreateUser(user *types.CreateUserRequest) (*types.CreateUserResponse, error) {
+func (l *CreateUserLogic) CreateUser(user *types.CreateUserRequest) (*types.CreateUserResponse, error) {
 	l.logHelper.Infof("Start process create user")
 	err := l.svcCtx.UserRepo.CreateUser(l.ctx, &model.User{
 		Name:     user.Name,

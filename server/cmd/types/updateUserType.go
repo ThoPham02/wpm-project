@@ -1,7 +1,7 @@
 package types
 
 type UpdateUserRequest struct {
-	ID       int64  `json:"id"`
+	ID       int64  `uri:"id"`
 }
 
 type UpdateUserBody struct {

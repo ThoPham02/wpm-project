@@ -17,7 +17,7 @@ func GetListColumn(model interface{}, ignoreColumn []string, datetimeColumn []st
 
 		if jsonTag != "" && !utils.StringSliceContains(ignoreColumn, jsonTag) {
 			if utils.StringSliceContains(datetimeColumn, jsonTag) {
-				result = append(result, fmt.Sprintf("CAST(IFNULL(%s,'') AS char) as %s", jsonTag, jsonTag))
+				result = append(result, fmt.Sprintf("CAST(IFNULL(%s,'') AS char) as `%s`", jsonTag, jsonTag))
 			} else {
 				result = append(result, jsonTag)
 			}

@@ -3,9 +3,9 @@ CREATE TABLE IF NOT EXISTS `users` (
     name varchar(255) NOT NULL,
     password varchar(255) NOT NULL,
     mail varchar(255) NOT NULL,
-    created_at datetime,
-    updated_at datetime,
-    deleted_at datetime
+    created_at datetime DEFAULT NULL,
+    updated_at datetime DEFAULT NULL,
+    deleted_at datetime DEFAULT NULL
 );
 
 INSERT INTO users (name, password, mail)
@@ -17,9 +17,9 @@ CREATE TABLE IF NOT EXISTS `posts` (
     descriptions nvarchar(255),
     content nvarchar(10000) NOT NULL,
     user_id int NOT NULL,
-    created_at datetime,
-    updated_at datetime,
-    deleted_at datetime,
+    created_at datetime DEFAULT NULL,
+    updated_at datetime DEFAULT NULL,
+    deleted_at datetime DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS `points` (
     user_id int NOT NULL,
     post_id int NOT NULL,
     wpm int DEFAULT 0,
-    created_at datetime,
-    updated_at datetime,
-    deleted_at datetime,
+    created_at datetime DEFAULT NULL,
+    updated_at datetime DEFAULT NULL,
+    deleted_at datetime DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (post_id) REFERENCES posts(id)
 );

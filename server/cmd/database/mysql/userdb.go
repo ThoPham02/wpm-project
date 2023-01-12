@@ -15,22 +15,22 @@ import (
 )
 
 type UserDB struct {
-	table string
-	connect *sqlx.DB
+	table               string
+	connect             *sqlx.DB
 	ignoreInsertColumns []string
-	datatimeColumns []string
+	datatimeColumns     []string
 }
 
-func NewUserDB(c config.Config) (repo.UserRepo, error){ 
+func NewUserDB(c config.Config) (repo.UserRepo, error) {
 	db, err := sqlx.Open(c.Database.Driver, c.Database.Source)
 	if err != nil {
 		panic(err)
 	}
 	return &UserDB{
-		table: "users",
-		connect: db,
+		table:               "users",
+		connect:             db,
 		ignoreInsertColumns: []string{"id"},
-		datatimeColumns: []string{"created_at", "updated_at", "deleted_at"},
+		datatimeColumns:     []string{},
 	}, nil
 }
 
@@ -45,7 +45,7 @@ func (u *UserDB) GetUser(ctx context.Context, condition *repo.UserConditions) ([
 	ctxLogger := logger.NewContextLog(ctx)
 	db := sq.Select("*").From(u.table)
 	if condition != nil {
-		
+
 	}
 	query, arg, err := db.ToSql()
 	if err != nil {
@@ -66,16 +66,17 @@ func (u *UserDB) GetUser(ctx context.Context, condition *repo.UserConditions) ([
 
 func (u *UserDB) CreateUser(ctx context.Context, user *model.User) error {
 	ctxLogger := logger.NewContextLog(ctx)
+	curTime := time.Now().Format(time.RFC3339)
+	user.Created_at = &curTime
 	db := sq.Insert(u.table).
-	Columns(GetListColumn(user, u.ignoreInsertColumns, u.datatimeColumns)...).
-	Values(GetListValues(user, u.ignoreInsertColumns, u.datatimeColumns)...).
-	Columns("created_at").Values(time.Now())
-
+		Columns(GetListColumn(user, u.ignoreInsertColumns, u.datatimeColumns)...).
+		Values(GetListValues(user, u.ignoreInsertColumns, u.datatimeColumns)...)
 	query, arg, err := db.ToSql()
 	if err != nil {
 		ctxLogger.Errorf("Failed while build query, error: %s", err.Error())
 		return err
 	}
+	ctxLogger.Debug(query)
 	_, err = u.connect.Exec(query, arg...)
 	if err != nil {
 		ctxLogger.Errorf("Failed while create user, error: %s", err.Error())
@@ -84,6 +85,28 @@ func (u *UserDB) CreateUser(ctx context.Context, user *model.User) error {
 	return nil
 }
 
-func (u *UserDB) UpdateUser(ctx context.Context,user *model.User) error {
+func (u *UserDB) UpdateUser(ctx context.Context, user *model.User) error {
+	ctxLogger := logger.NewContextLog(ctx)
+
+	curTime := time.Now().Format(time.RFC3339)
+
+	db := sq.Update(u.table).
+		Set("name", user.Name).
+		Set("password", user.Password).
+		Set("mail", user.Mail).
+		Set("updated_at", &curTime).
+		Where(sq.Eq{"id": user.ID})
+
+	query, arg, err := db.ToSql()
+	if err != nil {
+		ctxLogger.Errorf("Failed while build query, error: %s", err.Error())
+		return err
+	}
+	ctxLogger.Debug(query)
+	_, err = u.connect.Exec(query, arg...)
+	if err != nil {
+		ctxLogger.Errorf("Failed while update user, error: %s", err.Error())
+		return err
+	}
 	return nil
 }

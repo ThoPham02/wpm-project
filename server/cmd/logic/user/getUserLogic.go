@@ -40,6 +40,7 @@ func (l *GetUserLogic) GetUser() (*types.GetUserResponse, error) {
 			ID: value.ID,
 			Name: value.Name,
 			Mail: value.Mail,
+			CreatedAt: value.Created_at,
 		})
 	}
 
