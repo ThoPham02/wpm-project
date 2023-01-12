@@ -45,7 +45,7 @@ func (u *PostDB) GetPost(ctx context.Context, condition *repo.PostConditions) ([
 	ctxLogger := logger.NewContextLog(ctx)
 	db := sq.Select("*").
 		From(u.table).
-		Where(sq.NotEq{"deleted_at": nil})
+		Where(sq.Eq{"deleted_at": nil})
 	if condition != nil {
 		if condition.ID != 0 {
 			db.Where(sq.Eq{"id": condition.ID})
@@ -121,13 +121,9 @@ func (u *PostDB) DeletePost(ctx context.Context, condition *repo.PostConditions)
 
 	curTime := time.Now().Format(time.RFC3339)
 	db := sq.Update(u.table).
-		Set("deleted_at", &curTime)
-	if condition != nil {
-		if condition.ID != 0 {
-			db.Where(sq.Eq{"id": condition.ID})
-		}
-	}
-
+		Set("deleted_at", &curTime).
+		Where(sq.Eq{"id": condition.ID})
+		
 	query, arg, err := db.ToSql()
 	if err != nil {
 		ctxLogger.Errorf("Failed while build query, error: %s", err.Error())

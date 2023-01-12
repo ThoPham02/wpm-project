@@ -3,7 +3,7 @@ package post
 import (
 	"context"
 	"net/http"
-	"wpm-project/cmd/logic/user"
+	"wpm-project/cmd/logic/post"
 	"wpm-project/cmd/svc"
 	"wpm-project/cmd/types"
 	"wpm-project/core/http_request"
@@ -13,23 +13,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateUserHandler(svcCtx *svc.ServiceContext) gin.HandlerFunc {
+func UpdatePostHandler(svcCtx *svc.ServiceContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Add trace_id to context
-		ctx := context.WithValue(c.Request.Context(), "trace_id", logger.GenerateTraceID("get-user-api"))
+		ctx := context.WithValue(c.Request.Context(), "trace_id", logger.GenerateTraceID("get-Post-api"))
 		// Init log helper with context (have trace_id)
 		logHelper := logger.NewContextLog(ctx)
 		// New object logic (all logic code will implement in this object)
-		updateUserLogic := user.NewUpdateUserLogic(ctx, svcCtx, logHelper)
+		updatePostLogic := post.NewUpdatePostLogic(ctx, svcCtx, logHelper)
 
-		path := &types.UpdateUserRequest{}
+		path := &types.UpdatePostRequest{}
 		err := http_request.BindUri(c, path)
 		logHelper.Debug(path)
 		if err != nil {
 			http_response.ResponseJSON(c, http.StatusBadRequest, err.Error())
 			return
 		}
-		body := &types.UpdateUserBody{}
+		body := &types.UpdatePostBody{}
 		err = http_request.BindBodyJson(c, body)
 		logHelper.Debug(body)
 		if err != nil {
@@ -38,7 +38,7 @@ func UpdateUserHandler(svcCtx *svc.ServiceContext) gin.HandlerFunc {
 		}
 
 		// Call functions in logic to process
-		response, err := updateUserLogic.UpdateUser(path, body)
+		response, err := updatePostLogic.UpdatePost(path, body)
 		if err != nil {
 			http_response.ResponseJSON(c, http.StatusBadRequest, err.Error())
 			return

@@ -3,7 +3,7 @@ package post
 import (
 	"context"
 	"net/http"
-	"wpm-project/cmd/logic/user"
+	"wpm-project/cmd/logic/post"
 	"wpm-project/cmd/svc"
 	"wpm-project/core/http_response"
 	"wpm-project/core/logger"
@@ -11,17 +11,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetUserHandler(svcCtx *svc.ServiceContext) gin.HandlerFunc {
+func GetPostHandler(svcCtx *svc.ServiceContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Add trace_id to context
-		ctx := context.WithValue(c.Request.Context(), "trace_id", logger.GenerateTraceID("get-user-api"))
+		ctx := context.WithValue(c.Request.Context(), "trace_id", logger.GenerateTraceID("get-post-api"))
 		// Init log helper with context (have trace_id)
 		logHelper := logger.NewContextLog(ctx)
 		// New object logic (all logic code will implement in this object)
-		getUserLogic := user.NewGetUserLogic(ctx, svcCtx, logHelper)
+		getPostLogic := post.NewGetPostLogic(ctx, svcCtx, logHelper)
 
 		// Call functions in logic to process
-		response, err := getUserLogic.GetUser()
+		response, err := getPostLogic.GetPost()
 		if err != nil {
 			http_response.ResponseJSON(c, http.StatusBadRequest, err.Error())
 			return

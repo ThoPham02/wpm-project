@@ -24,7 +24,7 @@ func NewCreatePostLogic(ctx context.Context, svcCtx *svc.ServiceContext, logHelp
 }
 
 func (l *CreatePostLogic) CreatePost(post *types.CreatePostRequest) (*types.CreatePostResponse, error) {
-	l.logHelper.Infof("Start process create user")
+	l.logHelper.Infof("Start process create post")
 	err := l.svcCtx.PostRepo.CreatePost(l.ctx, &model.Post{
 		Title: post.Title,
 		Descriptions: post.Descriptions,

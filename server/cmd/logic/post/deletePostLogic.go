@@ -26,7 +26,7 @@ func NewDeletePostLogic(ctx context.Context, svcCtx *svc.ServiceContext, logHelp
 func (l *DeletePostLogic) DeletePost(request *types.DeletePostRequest) (*types.DeletePostResponse, error) {
 	l.logHelper.Infof("Start process Delete Post")
 	err := l.svcCtx.PostRepo.DeletePost(l.ctx, &repo.PostConditions{
-
+		ID: request.ID,
 	})
 	if err != nil {
 		l.logHelper.Errorf("Failed while Delete Post, error: %s", err.Error())
