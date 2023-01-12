@@ -119,6 +119,25 @@
   padding: 4px 12px;
 }
 
+.formLogin-btn {
+  width: 100%;
+  margin: 24px 0;
+}
+
+.login {
+  width: 600px;
+  height: 550px;
+  border: 1px solid #000;
+  margin: 12px auto;
+  padding: 12px 24px;
+  border-radius: 12px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.6);
+}
+.login-title {
+  text-align: center;
+  margin: 8px 0;
+}
+
 .rankItem:hover {
   background-color: #999;
 }
