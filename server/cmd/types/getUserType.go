@@ -12,5 +12,5 @@ type GetUserRequest struct {
 }
 
 type GetUserResponse struct {
-	UserResponse []User `json:"data_response"`
+	Data []User `json:"data"`
 }

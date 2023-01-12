@@ -25,7 +25,7 @@ func NewGetUserLogic(ctx context.Context, svcCtx *svc.ServiceContext, logHelper 
 
 func (l *GetUserLogic) GetUser() (*types.GetUserResponse, error) {
 	l.logHelper.Infof("Start process get user")
-	topics, err := l.svcCtx.UserRepo.GetUser(l.ctx, nil)
+	users, err := l.svcCtx.UserRepo.GetUser(l.ctx, nil)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, sql.ErrNoRows
@@ -35,7 +35,7 @@ func (l *GetUserLogic) GetUser() (*types.GetUserResponse, error) {
 	}
 
 	var dataResponse []types.User
-	for _, value := range topics {
+	for _, value := range users {
 		dataResponse = append(dataResponse, types.User{
 			ID: value.ID,
 			Name: value.Name,
@@ -45,6 +45,6 @@ func (l *GetUserLogic) GetUser() (*types.GetUserResponse, error) {
 	}
 
 	return &types.GetUserResponse{
-		UserResponse: dataResponse,
+		Data: dataResponse,
 	}, nil
 }

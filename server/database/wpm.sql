@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS `users` (
     deleted_at datetime DEFAULT NULL
 );
 
-INSERT INTO users (name, password, mail)
-VALUES ('John', '123456', 'John@gmail.com');
+INSERT INTO users (name, password, mail, created_at)
+VALUES ('John', '123456', 'John@gmail.com', "2023-01-12 06:31:06");
 
 CREATE TABLE IF NOT EXISTS `posts` (
     id int PRIMARY KEY AUTO_INCREMENT,
@@ -23,6 +23,9 @@ CREATE TABLE IF NOT EXISTS `posts` (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+INSERT INTO posts (title, descriptions, content, user_id, created_at)
+VALUES ('Hello World!', 'hello', 'Hello World! Hello World! Hello World! Hello World! Hello World!', 1, "2023-01-12 06:31:06");
+
 CREATE TABLE IF NOT EXISTS `points` (
     id int PRIMARY KEY AUTO_INCREMENT,
     user_id int NOT NULL,
@@ -34,3 +37,6 @@ CREATE TABLE IF NOT EXISTS `points` (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (post_id) REFERENCES posts(id)
 );
+
+INSERT INTO points (user_id, post_id, wpm, created_at)
+VALUES (1, 1, 40, "2023-01-12 06:31:06");

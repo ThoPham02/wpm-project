@@ -6,8 +6,8 @@ type GetPointRequest struct {
 type Point struct {
 	ID         int64   `json:"id"`
 	Name       string  `json:"name"`
-	PostID     string  `json:"post_id"`
-	Wpm        string  `json:"wpm"`
+	PostID     int64  `json:"post_id"`
+	Wpm        int64  `json:"wpm"`
 	Created_at *string `json:"created_at"`
 }
 

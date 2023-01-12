@@ -15,22 +15,22 @@ import (
 )
 
 type PointDB struct {
-	table string
-	connect *sqlx.DB
+	table               string
+	connect             *sqlx.DB
 	ignoreInsertColumns []string
-	datatimeColumns []string
+	datatimeColumns     []string
 }
 
-func NewPointDB(c config.Config) (repo.PointRepo, error){ 
+func NewPointDB(c config.Config) (repo.PointRepo, error) {
 	db, err := sqlx.Open(c.Database.Driver, c.Database.Source)
 	if err != nil {
 		panic(err)
 	}
 	return &PointDB{
-		table: "points",
-		connect: db,
+		table:               "points",
+		connect:             db,
 		ignoreInsertColumns: []string{"id"},
-		datatimeColumns: []string{"created_at", "updated_at", "deleted_at"},
+		datatimeColumns:     []string{},
 	}, nil
 }
 
@@ -66,10 +66,11 @@ func (u *PointDB) GetPoint(ctx context.Context, condition *repo.PointConditions)
 
 func (u *PointDB) CreatePoint(ctx context.Context, point *model.Point) error {
 	ctxLogger := logger.NewContextLog(ctx)
+	curTime := time.Now().Format(time.RFC3339)
+	point.Created_at = &curTime
 	db := sq.Insert(u.table).
-	Columns(GetListColumn(point, u.ignoreInsertColumns, u.datatimeColumns)...).
-	Values(GetListValues(point, u.ignoreInsertColumns, u.datatimeColumns)...).
-	Columns("created_at").Values(time.Now())
+		Columns(GetListColumn(point, u.ignoreInsertColumns, u.datatimeColumns)...).
+		Values(GetListValues(point, u.ignoreInsertColumns, u.datatimeColumns)...)
 
 	query, arg, err := db.ToSql()
 	if err != nil {
@@ -78,7 +79,7 @@ func (u *PointDB) CreatePoint(ctx context.Context, point *model.Point) error {
 	}
 	_, err = u.connect.Exec(query, arg...)
 	if err != nil {
-		ctxLogger.Errorf("Failed while create user, error: %s", err.Error())
+		ctxLogger.Errorf("Failed while create point, error: %s", err.Error())
 		return err
 	}
 	return nil
